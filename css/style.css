@@ -28,12 +28,10 @@ body {
 p { margin: 0; }
 ul { margin: 0; padding: 0; list-style: none; }
 
-/* Сетка-чертёж: рамка по краям, блоки разделены линиями */
+/* Сетка-чертёж: блоки разделены только горизонтальными линиями */
 .frame {
   max-width: 1280px;
   margin: 0 auto;
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
 }
 
 .block {
@@ -360,7 +358,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 600px) {
-  .frame { border-left: 0; border-right: 0; }
   .block__index { gap: 12px; }
   .cell { padding: 24px 16px; }
   .spec__row > * { padding: 24px 16px; }
