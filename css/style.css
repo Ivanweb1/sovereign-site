@@ -99,6 +99,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 .note { color: var(--muted); }
 
 /* 1. Главный экран */
+.hero { padding-top: clamp(28px, 4.5vw, 60px); }
+
 .hero__grid {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
