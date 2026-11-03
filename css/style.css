@@ -105,7 +105,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: clamp(32px, 5vw, 80px);
-  align-items: center;
+  align-items: stretch;
 }
 
 .manifest {
@@ -137,8 +137,17 @@ ul { margin: 0; padding: 0; list-style: none; }
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
 }
 
-.hero__art { margin: 0; }
-.hero__art svg { width: 100%; height: auto; display: block; }
+/* Графика растянута ровно на высоту текстовой колонки и не влияет на её высоту */
+.hero__art {
+  margin: 0;
+  position: relative;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  /* центральная вертикаль на всю высоту колонки */
+  background: linear-gradient(var(--line), var(--line)) no-repeat center / 1px 100%;
+}
+.hero__art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero__art svg * { vector-effect: non-scaling-stroke; }
 
 .art-grid line, .art-grid circle,
 .art-ticks line { stroke: var(--line); stroke-width: 1; }
@@ -343,7 +352,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* Адаптив */
 @media (max-width: 960px) {
   .hero__grid { grid-template-columns: 1fr; }
-  .hero__art { max-width: 280px; margin: 0 auto; }
+  .hero__art { width: 100%; max-width: 280px; margin: 0 auto; border: 0; background: none; }
+  .hero__art svg { position: static; height: auto; }
   .cells--3 { grid-template-columns: 1fr; }
   .spec__row { grid-template-columns: 1fr; }
   .spec__row > * + * { border-left: 0; border-top: 1px solid var(--line); }
