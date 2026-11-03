@@ -197,9 +197,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .spec__row > * + * { border-left: 1px solid var(--line); }
 
-.spec__code { display: grid; gap: 8px; align-content: start; }
+/* Строка как в PDF: «КОД | Название» */
+.spec__code { line-height: 1.5; }
 .code { font-size: 17px; font-weight: 700; }
-.name { color: var(--muted); font-size: 14px; }
+.sep { color: var(--muted); margin: 0 4px; }
+.name { color: var(--muted); font-size: 15px; }
 
 .spec__body { display: grid; gap: 12px; align-content: start; color: var(--muted); }
 
