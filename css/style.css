@@ -98,6 +98,19 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .note { color: var(--muted); }
 
+/* «Параметры входа…» — чёткой плашкой, в стиле заголовков схем */
+.fixed {
+  display: inline-block;
+  padding: 10px 0;
+  border-top: 1px solid var(--text);
+  border-bottom: 1px solid var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+}
+
 /* 1. Главный экран */
 .hero { padding-top: clamp(28px, 4.5vw, 60px); }
 
@@ -146,15 +159,16 @@ ul { margin: 0; padding: 0; list-style: none; }
   /* центральная вертикаль на всю высоту колонки */
   background: linear-gradient(var(--line), var(--line)) no-repeat center / 1px 100%;
 }
-.hero__art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero__art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
 .hero__art svg * { vector-effect: non-scaling-stroke; }
 
 .art-grid line, .art-grid circle,
 .art-ticks line { stroke: var(--line); stroke-width: 1; }
-.art-crystal * { stroke: var(--text); stroke-width: 1; }
-.art-crystal .back { stroke: var(--line); stroke-dasharray: 3 4; }
-.art-vector * { stroke: var(--white); stroke-width: 1; filter: drop-shadow(0 0 4px rgba(255,255,255,0.5)); }
-.art-node { fill: var(--white); filter: drop-shadow(0 0 6px rgba(255,255,255,0.8)); }
+.art-crystal * { stroke: var(--text); stroke-width: 1; stroke-linejoin: miter; }
+/* Стрела — главный элемент: толще, со свечением (фильтр задан в самом SVG) */
+.art-vector line { stroke: var(--white); stroke-width: 2.5; stroke-linecap: square; }
+.art-vector polygon { fill: var(--white); stroke: none; }
+.art-node { fill: var(--white); }
 
 /* 2. Физика */
 .cells {
@@ -173,12 +187,18 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .cell .h3 { color: var(--text); }
 
-.scheme { width: 100%; height: auto; display: block; }
+.scheme { width: 100%; height: auto; display: block; overflow: visible; }
 .scheme .wall { stroke: var(--muted); stroke-width: 1; }
 .scheme .leak { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 5; filter: blur(0.6px); }
 .scheme .mesh line { stroke: var(--line); stroke-width: 1; }
 .scheme .flow { stroke: var(--text); stroke-width: 1; }
-.scheme .flow--strong { stroke: var(--white); stroke-width: 2; filter: drop-shadow(0 0 4px rgba(255,255,255,0.45)); }
+.scheme .flow--strong { stroke: var(--white); stroke-width: 2; }
+.scheme .spray path { stroke: var(--text); stroke-width: 1.2; stroke-dasharray: 3 4; stroke-linecap: round; }
+.scheme .spray path:nth-child(3n) { stroke-dasharray: 1 5; }
+.scheme .spray path:nth-child(3n+1) { stroke: var(--white); }
+.scheme .burst { fill: var(--white); }
+.scheme .doc { stroke: var(--text); stroke-width: 1; }
+.scheme .doc-lines line { stroke: var(--muted); stroke-width: 1; }
 .scheme .art-ticks line { stroke: var(--muted); }
 
 .summary {
@@ -227,24 +247,16 @@ ul { margin: 0; padding: 0; list-style: none; }
 .spec__prices li:last-child { border-bottom: 0; padding-bottom: 0; }
 .spec__prices b { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-.spec__station { flex-direction: column; align-items: stretch !important; }
-.spec__station span { font-size: 13px; color: var(--muted); line-height: 1.55; }
-.spec__station b { align-self: flex-end; }
-
-.spec__row--lit {
-  outline: 1px solid #5A5A5A;
-  outline-offset: -1px;
-  box-shadow: var(--glow);
-}
+/* Станция — отдельный продукт: название и строка с ценой тем же шрифтом, что и остальные тарифы */
+.spec__station { flex-direction: column; align-items: stretch !important; gap: 10px; }
+.spec__station p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.spec__station-price { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 
 /* 4. Фильтр — свет */
 .gate {
   margin-top: clamp(32px, 5vw, 56px);
   max-width: 860px;
-  padding: clamp(24px, 4vw, 48px);
-  border: 1px solid #4A4A4A;
 }
-.gate--granted { box-shadow: var(--glow); background: rgba(224, 224, 224, 0.015); }
 
 .gate__status {
   display: flex;
@@ -272,26 +284,23 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* 5. Терминал формы */
 .terminal {
+  display: grid;
+  gap: 32px;
   margin-top: clamp(32px, 5vw, 56px);
-  max-width: 860px;
-  border: 1px solid var(--line);
+  max-width: 760px;
 }
 
-.field {
-  display: block;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--line);
-}
+.field { display: block; }
 
 .field__label {
   display: flex;
   gap: 16px;
   margin-bottom: 10px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: var(--text);
 }
-.field__label i { font-style: normal; color: #555; }
+.field__label i { font-style: normal; color: var(--muted); }
 
 .field input,
 .field textarea,
@@ -445,8 +454,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .btn {
   display: block;
-  width: calc(100% - 48px);
-  margin: 24px;
+  width: 100%;
+  margin: 8px 0 0;
   padding: 22px 24px;
   border: 1px solid var(--muted);
   background: #000;
@@ -469,7 +478,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* Адаптив */
 @media (max-width: 960px) {
   .hero__grid { grid-template-columns: 1fr; }
-  .hero__art { width: 100%; max-width: 280px; margin: 0 auto; border: 0; background: none; }
+  .hero__art { width: 100%; max-width: 320px; margin: 0 auto; border: 0; background: none; }
   .hero__art svg { position: static; height: auto; }
   .cells--3 { grid-template-columns: 1fr; }
   .spec__row { grid-template-columns: 1fr; }
@@ -480,7 +489,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   .block__index { gap: 12px; }
   .cell { padding: 24px 16px; }
   .spec__row > * { padding: 24px 16px; }
-  .field { padding: 18px 16px; }
-  .btn { width: calc(100% - 32px); margin: 16px; letter-spacing: 0.12em; font-size: 13px; }
+  .btn { letter-spacing: 0.12em; font-size: 13px; }
   .status { display: flex; }
 }

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Space Grotesk не поддерживает кириллицу, поэтому взят Manrope (моя замена) -->
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
         <p class="overline">СТАНЦИЯ СВЕРХПРОВОДИМОСТИ // ЭТАЛОННАЯ ЧАСТОТА</p>
         <h1 class="h1">Инженерия пропускной способности бизнес систем с&nbsp;высоким напряжением.</h1>
         <div class="manifest">
-          <p>Калибровка бизнес-архитектур, выявление явных и&nbsp;скрытых сопротивлений системы тормозящих генерацию Абсолютного профицита.</p>
+          <p>Калибровка бизнес-архитектур.<br>Выявление явных и&nbsp;скрытых сопротивлений системы, тормозящих генерацию Абсолютного профицита.</p>
           <p>Тотальная проводимость бизнес системы на&nbsp;всех уровнях&nbsp;- неизбежный элемент, восстанавливающий целостность и&nbsp;устойчивость всей системы.</p>
         </div>
         <p class="status"><span class="status__lamp" aria-hidden="true"></span>Вход в&nbsp;контур&nbsp;— Собственники бизнеса, Бенефициары.</p>
@@ -32,10 +32,20 @@
       <figure class="hero__art" aria-hidden="true">
         <!-- Вытянутые пропорции: верхняя и нижняя линии совпадают с краями текстовой колонки -->
         <svg viewBox="0 0 400 580" fill="none" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <!-- Свечение SVG-фильтром: CSS drop-shadow на SVG не работает в Safari (iPhone) -->
+            <filter id="glow-vector" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glow-node" x="-300%" y="-300%" width="700%" height="700%">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
           <g class="art-grid">
             <line x1="0" y1="290" x2="400" y2="290"/>
             <circle cx="200" cy="290" r="180"/>
-            <circle cx="200" cy="290" r="125" stroke-dasharray="2 6"/>
           </g>
           <g class="art-ticks">
             <line x1="200" y1="40" x2="210" y2="40"/><line x1="200" y1="80" x2="206" y2="80"/>
@@ -43,20 +53,18 @@
             <line x1="30" y1="285" x2="30" y2="295"/><line x1="60" y1="287" x2="60" y2="293"/>
             <line x1="340" y1="287" x2="340" y2="293"/><line x1="370" y1="285" x2="370" y2="295"/>
           </g>
+          <!-- Ромб фронтально, только сплошные линии: контур и две диагонали через центр -->
           <g class="art-crystal">
-            <polygon points="200,70 335,270 200,510 65,270"/>
-            <polyline points="65,270 165,315 335,270"/>
-            <line x1="165" y1="315" x2="200" y2="70"/>
-            <line x1="165" y1="315" x2="200" y2="510"/>
-            <polyline class="back" points="65,270 245,235 335,270"/>
-            <line class="back" x1="245" y1="235" x2="200" y2="70"/>
-            <line class="back" x1="245" y1="235" x2="200" y2="510"/>
+            <polygon points="200,70 335,290 200,510 65,290"/>
+            <line x1="200" y1="70" x2="200" y2="510"/>
+            <line x1="65" y1="290" x2="335" y2="290"/>
           </g>
-          <g class="art-vector">
-            <line x1="30" y1="540" x2="370" y2="40"/>
-            <polyline points="348,46 370,40 368,62"/>
+          <!-- Стрела калибровки: от низа ромба насквозь через центр и за пределы фигуры -->
+          <g class="art-vector" filter="url(#glow-vector)">
+            <line x1="12" y1="572" x2="380" y2="20"/>
+            <polygon points="392,2 382.6,31.7 366.6,21.1"/>
           </g>
-          <circle class="art-node" cx="200" cy="290" r="3"/>
+          <circle class="art-node" cx="200" cy="290" r="3.5" filter="url(#glow-node)"/>
         </svg>
       </figure>
     </div>
@@ -66,7 +74,7 @@
   <section class="block" id="physics">
     <div class="block__index"><span>02</span><span>Физика проводимости системы</span></div>
     <h2 class="h2">Восстановление сквозной проводимости и&nbsp;архитектуры бизнеса.</h2>
-    <p class="lead">Линейный бизнес ищет причины потери масштаба в&nbsp;«маркетинге» или&nbsp;«сотрудниках». Это&nbsp;фасадная галлюцинация. Реальная потеря потенциала происходит по&nbsp;ключевым и&nbsp;фундаментальным причинам:</p>
+    <p class="lead">Линейный бизнес ищет причины потери масштаба в&nbsp;«маркетинге» или&nbsp;«сотрудниках». Это&nbsp;фасадная галлюцинация.<br>Реальная потеря потенциала происходит по&nbsp;ключевым и&nbsp;фундаментальным причинам:</p>
 
     <div class="cells cells--3">
       <!-- Схемы каналов — моя графика по описанию из концепции -->
@@ -74,14 +82,26 @@
         <svg class="scheme" viewBox="0 0 240 120" fill="none" aria-hidden="true">
           <line class="wall" x1="0" y1="20" x2="240" y2="20" stroke-dasharray="14 8"/>
           <line class="wall" x1="0" y1="100" x2="240" y2="100" stroke-dasharray="14 8"/>
-          <path class="leak" d="M10 60 C 60 60, 80 40, 120 18 S 190 -10, 230 4"/>
-          <path class="leak" d="M10 60 C 60 60, 90 80, 130 104 S 200 126, 230 118"/>
-          <path class="leak" d="M10 60 C 70 60, 110 54, 150 30"/>
-          <path class="leak" d="M10 60 C 70 60, 120 70, 170 96"/>
-          <line class="flow" x1="10" y1="60" x2="70" y2="60"/>
+          <!-- Точка разрыва: поток брызжет во все стороны, вверх и вниз, сквозь размытый контур -->
+          <g class="spray">
+            <path d="M96 60 Q150 52 236 34"/>
+            <path d="M96 60 Q160 64 236 72"/>
+            <path d="M96 60 Q150 38 212 4"/>
+            <path d="M96 60 Q132 30 158 2"/>
+            <path d="M96 60 Q108 30 106 2"/>
+            <path d="M96 60 Q82 32 56 6"/>
+            <path d="M96 60 Q150 82 228 110"/>
+            <path d="M96 60 Q134 92 166 118"/>
+            <path d="M96 60 Q110 92 104 118"/>
+            <path d="M96 60 Q80 90 52 114"/>
+            <path d="M96 60 Q70 46 44 36"/>
+            <path d="M96 60 Q70 72 46 86"/>
+          </g>
+          <line class="flow flow--strong" x1="10" y1="60" x2="92" y2="60"/>
+          <circle class="burst" cx="96" cy="60" r="3"/>
         </svg>
         <h3 class="h3">ДИССИПАЦИЯ (Размытие контура)</h3>
-        <p>Бесконтрольное рассеивание капитала, времени и&nbsp;внимания. Возникает из-за отсутствия четкой архитектуры идентичности и&nbsp;системной дисциплины.</p>
+        <p>Бесконтрольное рассеивание капитала, времени и&nbsp;внимания возникает из-за отсутствия четкой архитектуры идентичности и&nbsp;системной дисциплины.</p>
       </article>
 
       <article class="cell">
@@ -96,8 +116,8 @@
             <line x1="105" y1="57" x2="240" y2="57"/><line x1="105" y1="60" x2="240" y2="60"/><line x1="105" y1="63" x2="240" y2="63"/>
           </g>
           <g class="mesh"><line x1="108" y1="54" x2="108" y2="66"/><line x1="114" y1="54" x2="114" y2="66"/><line x1="120" y1="54" x2="120" y2="66"/><line x1="126" y1="54" x2="126" y2="66"/><line x1="132" y1="54" x2="132" y2="66"/><line x1="138" y1="54" x2="138" y2="66"/><line x1="144" y1="54" x2="144" y2="66"/><line x1="150" y1="54" x2="150" y2="66"/><line x1="156" y1="54" x2="156" y2="66"/><line x1="162" y1="54" x2="162" y2="66"/><line x1="168" y1="54" x2="168" y2="66"/><line x1="174" y1="54" x2="174" y2="66"/><line x1="180" y1="54" x2="180" y2="66"/><line x1="186" y1="54" x2="186" y2="66"/><line x1="192" y1="54" x2="192" y2="66"/><line x1="198" y1="54" x2="198" y2="66"/><line x1="204" y1="54" x2="204" y2="66"/><line x1="210" y1="54" x2="210" y2="66"/><line x1="216" y1="54" x2="216" y2="66"/><line x1="222" y1="54" x2="222" y2="66"/><line x1="228" y1="54" x2="228" y2="66"/><line x1="234" y1="54" x2="234" y2="66"/><line x1="240" y1="54" x2="240" y2="66"/></g>
-          <line class="flow" x1="10" y1="60" x2="88" y2="60"/>
-          <polyline class="flow" points="80,52 88,60 80,68"/>
+          <line class="flow flow--strong" x1="10" y1="60" x2="88" y2="60"/>
+          <polyline class="flow flow--strong" points="80,52 88,60 80,68"/>
         </svg>
         <h3 class="h3">ГИПЕР-СЖАТИЕ (Блокировка проводимости)</h3>
         <p>Контроль и&nbsp;жесткие регламенты. Система защищает свои инструкции, но&nbsp;физически отталкивает входящие финансовые транзакции и&nbsp;профицитных клиентов.</p>
@@ -107,7 +127,11 @@
         <svg class="scheme" viewBox="0 0 240 120" fill="none" aria-hidden="true">
           <line class="wall" x1="0" y1="14" x2="240" y2="14"/>
           <line class="wall" x1="0" y1="106" x2="240" y2="106"/>
-          <line class="flow flow--strong" x1="10" y1="60" x2="226" y2="60"/>
+          <!-- «Код» основания: документ, из которого выходит импульс (моя трактовка) -->
+          <rect class="doc" x="8" y="40" width="28" height="40"/>
+          <g class="doc-lines"><line x1="14" y1="50" x2="30" y2="50"/><line x1="14" y1="57" x2="30" y2="57"/><line x1="14" y1="64" x2="26" y2="64"/></g>
+          <polyline class="flow" points="36,60 50,60 56,34 62,86 68,44 74,72 80,60 92,60"/>
+          <line class="flow flow--strong" x1="92" y1="60" x2="226" y2="60"/>
           <polyline class="flow flow--strong" points="214,50 226,60 214,70"/>
           <g class="art-ticks">
             <line x1="40" y1="100" x2="40" y2="106"/><line x1="80" y1="100" x2="80" y2="106"/>
@@ -120,14 +144,14 @@
       </article>
     </div>
 
-    <p class="summary">Внутренняя отчетность не&nbsp;покажет вам что&nbsp;за&nbsp;ее пределами. Калибровка проявляет то, что&nbsp;ваша система оттолкнула на&nbsp;входе.</p>
+    <p class="summary">Внутренняя отчётность не&nbsp;покажет вам реальную картину вашего бизнеса и&nbsp;что&nbsp;за&nbsp;её пределами.<br>Калибровка проявляет истинность и&nbsp;то, что&nbsp;система оттолкнула на&nbsp;входе.</p>
   </section>
 
   <!-- 3. РЕЕСТР ПРОТОКОЛОВ -->
   <section class="block" id="registry">
     <div class="block__index"><span>03</span><span>Реестр протоколов</span></div>
     <h2 class="h2">Номенклатура калибровочных протоколов</h2>
-    <p class="note">(Параметры входа и&nbsp;стоимость фиксированы).</p>
+    <p class="fixed">Параметры входа и&nbsp;стоимость фиксированы</p>
 
     <div class="spec">
       <article class="spec__row">
@@ -140,8 +164,9 @@
           <li><span>Флагманский контур</span><b>500&nbsp;000&nbsp;₽</b></li>
           <li><span>Сквозная система</span><b>750&nbsp;000&nbsp;₽</b></li>
           <li class="spec__station">
-            <span>«Самодостаточная Квантовая Станция калибровки». Калибровка мышления, увидеть физику Капитала, понять природу Энтропии, выжечь иллюзии. Повысить емкость, плотность, ампераж, восстановить Суверенитет. Обладая необходимой емкостью Заводской Конфигурации и&nbsp;естественной склонностью к&nbsp;системной сборке возможность для&nbsp;самостоятельной перестройки тотальной проводимости контура. Доступ в&nbsp;Закрытый канал на&nbsp;30 дней:</span>
-            <b>450&nbsp;000&nbsp;₽</b>
+            <span class="spec__station-name">Самодостаточная Квантовая Станция калибровки</span>
+            <p>Калибровка мышления, увидеть физику Капитала, понять природу Энтропии, выжечь иллюзии. Повысить емкость, плотность, ампераж, восстановить Суверенитет. Обладая необходимой емкостью Заводской Конфигурации и&nbsp;естественной склонностью к&nbsp;системной сборке возможность для&nbsp;самостоятельной перестройки тотальной проводимости контура.</p>
+            <div class="spec__station-price"><span>Доступ в&nbsp;Закрытый канал на&nbsp;30 дней</span><b>450&nbsp;000&nbsp;₽</b></div>
           </li>
         </ul>
       </article>
@@ -156,8 +181,7 @@
         </ul>
       </article>
 
-      <!-- Выделение интегрального протокола — из концепции (вариант 2, п. 3) -->
-      <article class="spec__row spec__row--lit">
+      <article class="spec__row">
         <div class="spec__code"><span class="code">INTEGRAL POWER</span> <span class="sep">|</span> <span class="name">Интегральная калибровочная станция</span></div>
         <div class="spec__body">
           <p>Сквозная калибровка: Первое Лицо + Архитектура Бизнес системы.</p>
@@ -175,7 +199,7 @@
     <div class="block__index"><span>04</span><span>Фильтр входа</span></div>
     <h2 class="h2">Протокол допуска в&nbsp;контур</h2>
     <!-- Блок «Отказ в доступе» не добавлен: его нет в текстах (открытый вопрос в BRIEF.md) -->
-    <div class="gate gate--granted">
+    <div class="gate">
       <p class="gate__status"><span class="status__lamp" aria-hidden="true"></span>ДОПУСК РАЗРЕШЕН</p>
       <ul class="gate__list">
         <li>Собственники, Бенефициары и&nbsp;Первые Лица с&nbsp;масштабом бизнеса, требующим чистой пропускной способности.</li>
@@ -212,7 +236,7 @@
             <option>Локальная точка: 350&nbsp;000&nbsp;₽</option>
             <option>Флагманский контур: 500&nbsp;000&nbsp;₽</option>
             <option>Сквозная система: 750&nbsp;000&nbsp;₽</option>
-            <option>«Самодостаточная Квантовая Станция калибровки»: 450&nbsp;000&nbsp;₽</option>
+            <option>Самодостаточная Квантовая Станция калибровки: 450&nbsp;000&nbsp;₽</option>
           </optgroup>
           <option>SOVEREIGN VECTOR | Калибровка емкости Первого Лица: 750&nbsp;000&nbsp;₽</option>
           <option>INTEGRAL POWER | Интегральная калибровочная станция: 1&nbsp;650&nbsp;000&nbsp;₽</option>
@@ -224,6 +248,6 @@
 
 </main>
 
-<script src="js/main.js?v=5"></script>
+<script src="js/main.js?v=6"></script>
 </body>
 </html>
