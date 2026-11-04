@@ -193,10 +193,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 .scheme .mesh line { stroke: var(--line); stroke-width: 1; }
 .scheme .flow { stroke: var(--text); stroke-width: 1; }
 .scheme .flow--strong { stroke: var(--white); stroke-width: 2; }
-.scheme .spray path { stroke: var(--text); stroke-width: 1.2; stroke-dasharray: 3 4; stroke-linecap: round; }
-.scheme .spray path:nth-child(3n) { stroke-dasharray: 1 5; }
-.scheme .spray path:nth-child(3n+1) { stroke: var(--white); }
-.scheme .burst { fill: var(--white); }
+.scheme .spray line { stroke: var(--white); stroke-linecap: round; }
+.scheme .ray { stroke: var(--white); stroke-width: 2; }
 .scheme .doc { stroke: var(--text); stroke-width: 1; }
 .scheme .doc-lines line { stroke: var(--muted); stroke-width: 1; }
 .scheme .art-ticks line { stroke: var(--muted); }
