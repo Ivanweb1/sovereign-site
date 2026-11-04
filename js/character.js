@@ -85,18 +85,7 @@
     }
     ctx.beginPath(); ctx.moveTo(X, Math.max(a, -2)); ctx.lineTo(X, Math.min(b, H + 2)); ctx.stroke();
     ctx.restore();
-    if (style === "registry") {
-      // зажимы: регламенты сдавливают канал
-      ctx.save(); ctx.strokeStyle = "rgba(138,138,138,0.9)"; ctx.lineWidth = 1;
-      const step = 34, first = Math.ceil(y1 / step) * step;
-      ctx.beginPath();
-      for (let y = first; y < y2; y += step) {
-        const sy = y - scrollY; if (sy < -10 || sy > H + 10) continue;
-        ctx.moveTo(X - 7, sy - 6); ctx.lineTo(X - 2, sy);
-        ctx.moveTo(X + 7, sy - 6); ctx.lineTo(X + 2, sy);
-      }
-      ctx.stroke(); ctx.restore();
-    }
+    // зажимы-галочки в реестре убраны по просьбе заказчицы 04.11 — остаётся чистая линия
   }
 
   function frame() {
@@ -114,20 +103,11 @@
     // искры («бенгальский огонь») у головы убраны по просьбе заказчицы 04.11 — в физике остаётся только пунктир
     if (head > startDoc) {
       // голова импульса
-      const jitter = zone === "registry" && !reduced ? (Math.random() - 0.5) * 1.6 : 0;
       const sig = zone === "portal";
       ctx.save();
       ctx.fillStyle = sig ? `rgb(${SIGNAL})` : "#fff";
       ctx.shadowColor = sig ? "rgba(64,170,255,0.95)" : "rgba(255,255,255,0.8)"; ctx.shadowBlur = 12;
-      ctx.beginPath(); ctx.arc(X + jitter, hy, zone === "registry" ? 2 : 3, 0, Math.PI * 2); ctx.fill();
-      if (zone === "registry") {
-        // канал сжат у самой головы
-        ctx.shadowBlur = 0; ctx.strokeStyle = "rgba(224,224,224,0.9)"; ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(X - 12, hy - 18); ctx.lineTo(X - 3, hy); ctx.lineTo(X - 12, hy + 18);
-        ctx.moveTo(X + 12, hy - 18); ctx.lineTo(X + 3, hy); ctx.lineTo(X + 12, hy + 18);
-        ctx.stroke();
-      }
+      ctx.beginPath(); ctx.arc(X, hy, 3, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
 
