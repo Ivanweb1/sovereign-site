@@ -1,0 +1,101 @@
+/* Вариант первого экрана по присланному CSS: угольный фон, виньетка, светящееся ядро.
+   Классы из присланного кода перенесены на нашу разметку:
+   .sovereign-station → .hero, .station-header → .overline, .station-title → .h1,
+   .energy-beam → .energy-beam (новое ядро в центре ромба), .gate-access → .status */
+
+.hero {
+  position: relative;
+  background-color: #030303;
+  color: #f0f0f0;
+  min-height: 90vh;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Кинематографическая виньетка (в присланном коде кавычки были типографские — исправлено на '') */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.03) 0%, rgba(3, 3, 3, 0.95) 85%);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero > * { position: relative; z-index: 2; }
+
+/* Фон страницы за пределами 1280px тоже угольный, чтобы экран не выглядел «вставкой» */
+html, body { background: #030303; }
+
+.hero .overline {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hero .h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  max-width: 900px;
+  margin: 24px 0;
+  color: #ffffff;
+}
+
+/* Шлюз доступа: жёсткий барьер слева вместо плашки */
+.hero .status {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  border: 0;
+  border-left: 2px solid #ffffff;
+  box-shadow: none;
+  padding: 4px 0 4px 16px;
+}
+.hero .status__lamp { display: none; }
+
+/* Контур ромба ярче, со свечением */
+.hero .art-crystal * { stroke: #ffffff; }
+.hero .art-crystal { filter: url(#glow-node); }
+.hero .art-node { display: none; }
+
+/* Ядро-излучатель: белый ромб в центре фигуры с пульсирующим свечением.
+   В присланном коде 60px — у нас ромб-фигура меньше, поэтому ядро уменьшено (моё решение) */
+.energy-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(18px, 2vw, 26px);
+  height: clamp(18px, 2vw, 26px);
+  margin: calc(clamp(18px, 2vw, 26px) / -2) 0 0 calc(clamp(18px, 2vw, 26px) / -2);
+  background: #ffffff;
+  transform: rotate(45deg);
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.6),
+    0 0 80px rgba(255, 255, 255, 0.3),
+    inset 0 0 15px rgba(0, 0, 0, 0.8);
+  animation: core-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes core-pulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);
+    transform: rotate(45deg) scale(0.98);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(255, 255, 255, 0.8), 0 0 110px rgba(255, 255, 255, 0.4);
+    transform: rotate(45deg) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .energy-beam { animation: none; }
+}
+
+@media (max-width: 960px) {
+  .hero { min-height: 0; }
+}
