@@ -3,11 +3,39 @@
    4. Живые схемы     5. Один сигнальный цвет — только там, где поток идёт без потерь */
 
 :root {
-  --signal: #5CC8FF;                 /* холодный электрический голубой — мой выбор */
-  --signal-glow: rgba(92, 200, 255, 0.55);
+  /* По референсу заказчицы 04.11: фон тёмно-синий вместо чёрного, голубой — с белым оттенком.
+     Точные оттенки — мой подбор по картинке */
+  --bg: #0A1024;
+  --line: #24304D;
+  --muted: #8C97B3;
+  --text: #E2E8F5;
+  --signal: #A6E4FF;                 /* голубой с белым оттенком — ядро света */
+  --signal-glow: rgba(64, 170, 255, 0.6);  /* синее свечение вокруг */
   --display: "Oswald", "Arial Narrow", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
+
+/* фон — глубокий синий с лёгким светом сверху, как на референсе */
+body {
+  background:
+    radial-gradient(120% 60% at 50% -10%, rgba(40, 80, 170, 0.22), transparent 60%),
+    var(--bg);
+}
+.btn { background: #060A18; }
+
+/* Свечение названий (просьба заказчицы: «чтобы блестели, выделялись как луч») */
+.cell .h3,
+.spec__code .name {
+  color: var(--white);
+  text-shadow: 0 0 1px rgba(255, 255, 255, 1), 0 0 8px rgba(166, 228, 255, 0.8), 0 0 22px rgba(64, 170, 255, 0.6), 0 0 44px rgba(64, 170, 255, 0.3);
+}
+.spec__code .code { text-shadow: 0 0 12px rgba(166, 228, 255, 0.35); }
+.spec__code .name { font-size: 16px; }
+
+/* Форма собрана плотнее: поля без линий, меньше воздуха между ними */
+.terminal { gap: 10px; }
+.field__label { margin-bottom: 4px; }
+.field input, .field textarea, .field select, .dd__btn { background-color: rgba(166, 200, 255, 0.06); }
 
 /* 1. Голос в шрифте */
 .h1, .h2 {
@@ -53,18 +81,19 @@
   white-space: nowrap;
   transform-origin: left bottom;
 }
-#portal .mega__word { color: var(--signal); text-shadow: 0 0 40px rgba(92, 200, 255, 0.25); }
+#portal .mega__word { color: var(--signal); text-shadow: 0 0 40px rgba(64, 170, 255, 0.35); }
 
 /* 5. Сигнал: стрела главного экрана — чистый поток */
 .art-vector line { stroke: var(--signal); }
+.art-vector .halo { stroke: #4AAEFF; }
 .art-vector polygon { fill: var(--signal); }
 .status__lamp--signal { background: var(--signal); box-shadow: 0 0 12px var(--signal-glow); }
 .btn:hover, .btn:focus-visible {
   border-color: var(--signal);
   color: var(--signal);
-  box-shadow: 0 0 0 1px var(--signal), 0 0 22px rgba(92, 200, 255, 0.3);
+  box-shadow: 0 0 0 1px var(--signal), 0 0 22px rgba(64, 170, 255, 0.4);
 }
-.btn.is-target { border-color: var(--signal); box-shadow: 0 0 0 1px var(--signal), 0 0 26px rgba(92, 200, 255, 0.28); }
+.btn.is-target { border-color: var(--signal); box-shadow: 0 0 0 1px var(--signal), 0 0 26px rgba(64, 170, 255, 0.38); }
 
 /* 3. Сквозной импульс — холст поверх страницы, клики не перехватывает */
 .thread {
@@ -109,9 +138,10 @@
   70%, 100% { stroke: var(--line); }
 }
 
-/* Импульс в вектор: документ → зигзаг → чистая сигнальная линия → бегущий импульс */
+/* Импульс в вектор: документ → волна раскачивается и выходит за грани → чистый вектор → бегущий импульс */
+.cell--impulse .zig { stroke: var(--text); stroke-width: 1; stroke-linejoin: round; opacity: 0.85; }
 .cell--impulse .signal-line,
-.cell--impulse .signal-head { stroke: var(--signal); }
+.cell--impulse .signal-head { stroke: var(--signal); filter: drop-shadow(0 0 3px var(--signal-glow)); }
 .cell--impulse .zig,
 .cell--impulse .signal-line { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .cell--impulse .signal-head { opacity: 0; }
@@ -123,10 +153,10 @@
   stroke-dashoffset: 10;
   opacity: 0;
 }
-.cell--impulse.is-live .zig { animation: draw 1.1s ease-out forwards; }
-.cell--impulse.is-live .signal-line { animation: draw 1.1s cubic-bezier(.6, 0, .2, 1) 1s forwards; }
-.cell--impulse.is-live .signal-head { animation: appear .4s ease-out 2s forwards; }
-.cell--impulse.is-live .runner { animation: run 2.4s cubic-bezier(.5, 0, .5, 1) 2.3s infinite; }
+.cell--impulse.is-live .zig { animation: draw 1.8s ease-in forwards; }
+.cell--impulse.is-live .signal-line { animation: draw 1.1s cubic-bezier(.6, 0, .2, 1) 1.7s forwards; }
+.cell--impulse.is-live .signal-head { animation: appear .4s ease-out 2.7s forwards; }
+.cell--impulse.is-live .runner { animation: run 2.4s cubic-bezier(.5, 0, .5, 1) 3s infinite; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes appear { to { opacity: 1; } }
 @keyframes run {

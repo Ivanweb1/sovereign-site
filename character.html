@@ -11,8 +11,8 @@
   <!-- Space Grotesk не поддерживает кириллицу, поэтому взят Manrope (моя замена).
        Вариант с характером: заголовки — Oswald (узкий), техническая мелочь — JetBrains Mono (мой выбор) -->
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Oswald:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=6">
-  <link rel="stylesheet" href="css/character.css?v=1">
+  <link rel="stylesheet" href="css/style.css?v=9">
+  <link rel="stylesheet" href="css/character.css?v=2">
 </head>
 <body>
 
@@ -29,7 +29,6 @@
           <p>Калибровка бизнес-архитектур.<br>Выявление явных и&nbsp;скрытых сопротивлений системы, тормозящих генерацию Абсолютного профицита.</p>
           <p>Тотальная проводимость бизнес системы на&nbsp;всех уровнях&nbsp;- неизбежный элемент, восстанавливающий целостность и&nbsp;устойчивость всей системы.</p>
         </div>
-        <p class="status"><span class="status__lamp" aria-hidden="true"></span>Вход в&nbsp;контур&nbsp;— Собственники бизнеса, Бенефициары.</p>
       </div>
       <!-- Кристалл/вектор проводимости — моя графика по описанию из концепции -->
       <figure class="hero__art" aria-hidden="true">
@@ -37,13 +36,11 @@
         <svg viewBox="0 0 400 580" fill="none" preserveAspectRatio="xMidYMid meet">
           <defs>
             <!-- Свечение SVG-фильтром: CSS drop-shadow на SVG не работает в Safari (iPhone) -->
-            <filter id="glow-vector" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="glow-node" x="-300%" y="-300%" width="700%" height="700%">
-              <feGaussianBlur stdDeviation="4" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <!-- Стрела — световой разрез: ядро + широкое свечение (как в основной версии) -->
+            <filter id="glow-vector" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2" result="b1"/>
+              <feGaussianBlur stdDeviation="9" result="b2"/>
+              <feMerge><feMergeNode in="b2"/><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
           <g class="art-grid">
@@ -56,21 +53,27 @@
             <line x1="30" y1="285" x2="30" y2="295"/><line x1="60" y1="287" x2="60" y2="293"/>
             <line x1="340" y1="287" x2="340" y2="293"/><line x1="370" y1="285" x2="370" y2="295"/>
           </g>
-          <!-- Ромб фронтально, только сплошные линии: контур и две диагонали через центр -->
+          <!-- Объёмный кристалл из основной версии (просьба заказчицы 04.11); задние рёбра пунктиром -->
           <g class="art-crystal">
-            <polygon points="200,70 335,290 200,510 65,290"/>
-            <line x1="200" y1="70" x2="200" y2="510"/>
-            <line x1="65" y1="290" x2="335" y2="290"/>
+            <polygon points="200,70 335,270 200,510 65,270"/>
+            <polyline points="65,270 165,315 335,270"/>
+            <line x1="165" y1="315" x2="200" y2="70"/>
+            <line x1="165" y1="315" x2="200" y2="510"/>
+            <polyline class="back" points="65,270 245,235 335,270"/>
+            <line class="back" x1="245" y1="235" x2="200" y2="70"/>
+            <line class="back" x1="245" y1="235" x2="200" y2="510"/>
           </g>
           <!-- Стрела калибровки: от низа ромба насквозь через центр и за пределы фигуры -->
           <g class="art-vector" filter="url(#glow-vector)">
+            <line class="halo" x1="12" y1="572" x2="380" y2="20"/>
             <line x1="12" y1="572" x2="380" y2="20"/>
             <polygon points="392,2 382.6,31.7 366.6,21.1"/>
           </g>
-          <circle class="art-node" cx="200" cy="290" r="3.5" filter="url(#glow-node)"/>
         </svg>
       </figure>
     </div>
+    <!-- По просьбе заказчицы: вход в контур — под кристаллом, в конце раздела -->
+    <p class="status"><span class="status__lamp" aria-hidden="true"></span>Вход в&nbsp;контур&nbsp;— Собственники бизнеса, Бенефициары.</p>
   </section>
 
   <!-- 2. ФИЗИКА ПРОВОДИМОСТИ СИСТЕМЫ -->
@@ -272,11 +275,13 @@
           <!-- «Код» основания: документ, из которого выходит импульс (моя трактовка) -->
           <rect class="doc" x="8" y="40" width="28" height="40"/>
           <g class="doc-lines"><line x1="14" y1="50" x2="30" y2="50"/><line x1="14" y1="57" x2="30" y2="57"/><line x1="14" y1="64" x2="26" y2="64"/></g>
-          <polyline class="flow zig" pathLength="1" points="36,60 50,60 56,34 62,86 68,44 74,72 80,60 92,60"/>
-          <line class="flow flow--strong signal-line" pathLength="1" x1="92" y1="60" x2="226" y2="60"/>
+          <!-- По рисунку заказчицы 04.11: сплошные линии — границы системы. Нечётко прописанный код
+               раскачивает поток, и он выходит за грани системы; голубой вектор — код прописан чётко -->
+          <polyline class="flow zig" pathLength="1" points="36,60.0 38,58.7 40,57.6 42,56.7 44,56.3 46,56.5 48,57.4 50,59.0 52,61.0 54,63.2 56,65.0 58,66.1 60,66.2 62,65.2 64,63.0 66,60.0 68,56.6 70,53.5 72,51.2 74,50.3 76,51.1 78,53.7 80,57.7 82,62.5 84,67.3 86,71.2 88,73.4 90,73.3 92,70.9 94,66.2 96,60.0 98,53.3 100,47.4 102,43.3 104,41.9 106,43.7 108,48.5 110,55.8 112,64.3 114,72.6 116,79.2 118,82.7 120,82.3 122,78.0 124,70.1 126,60.0 128,49.3 130,40.0 132,33.7 134,31.8 136,34.8 138,42.4 140,53.6 142,66.5 144,78.9 146,88.5 148,93.4 150,92.7 152,86.1 154,74.6 156,60.0 158,44.7 160,31.5 162,22.8 164,20.3 166,24.7 168,35.6 170,51.2 172,69.0 174,85.9 176,98.8 178,105.4 180,104.3 182,95.2 184,79.6 186,60.0 188,39.7 190,22.2 192,10.8 194,7.7 196,13.7 198,28.1 200,48.5 202,71.7 204,93.5 206,110.2 208,118.5 210,116.8 212,105.1 214,85.0 216,60.0 218,34.2 220,12.2 222,-2.1 224,-5.9 226,1.8 228,20.0 230,45.6 232,74.6 234,101.7"/>
+          <line class="flow flow--strong signal-line" pathLength="1" x1="36" y1="60" x2="226" y2="60"/>
           <polyline class="flow flow--strong signal-head" points="214,50 226,60 214,70"/>
-          <!-- бегущий импульс по чистому каналу -->
-          <line class="runner" pathLength="100" x1="92" y1="60" x2="226" y2="60"/>
+          <!-- бегущий импульс по вектору -->
+          <line class="runner" pathLength="100" x1="36" y1="60" x2="226" y2="60"/>
           <g class="art-ticks">
             <line x1="40" y1="100" x2="40" y2="106"/><line x1="80" y1="100" x2="80" y2="106"/>
             <line x1="120" y1="100" x2="120" y2="106"/><line x1="160" y1="100" x2="160" y2="106"/>
@@ -398,6 +403,6 @@
 <canvas class="thread" aria-hidden="true"></canvas>
 
 <script src="js/main.js?v=6"></script>
-<script src="js/character.js?v=1"></script>
+<script src="js/character.js?v=2"></script>
 </body>
 </html>

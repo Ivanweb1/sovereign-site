@@ -36,9 +36,8 @@
   const ctx = cv.getContext("2d");
   const btn = document.querySelector(".terminal .btn");
   const zoneIds = ["physics", "registry", "filter", "portal"];
-  const SIGNAL = "92,200,255";
+  const SIGNAL = "166,228,255";   // голубой с белым оттенком, как в CSS
   let W = 0, H = 0, dpr = 1, zones = [], startDoc = 0, endDoc = 0, X = 0, btnDocY = 0, btnLeft = 0;
-  const parts = [];
 
   function docTop(el) { return el.getBoundingClientRect().top + scrollY; }
 
@@ -82,7 +81,7 @@
       ctx.strokeStyle = "rgba(255,255,255,0.95)"; ctx.lineWidth = 1.5;
     } else {
       ctx.strokeStyle = `rgb(${SIGNAL})`; ctx.lineWidth = 2;
-      ctx.shadowColor = `rgba(${SIGNAL},0.8)`; ctx.shadowBlur = 10;
+      ctx.shadowColor = "rgba(64,170,255,0.9)"; ctx.shadowBlur = 10;
     }
     ctx.beginPath(); ctx.moveTo(X, Math.max(a, -2)); ctx.lineTo(X, Math.min(b, H + 2)); ctx.stroke();
     ctx.restore();
@@ -112,33 +111,14 @@
     const zone = zoneAt(head);
     const hy = head - scrollY;
 
-    // частицы диссипации отрываются от головы и улетают вперёд (вниз)
-    if (!reduced && zone === "physics" && head > startDoc && parts.length < 240) {
-      const narrow = X < 20 ? 0.35 : 1;
-      for (let i = 0; i < 2; i++) {
-        const z = Math.random() ** 1.5;
-        parts.push({ x: X, y: head, vx: (Math.random() - 0.5) * 2.2 * narrow, vy: 0.5 + Math.random() * 1.8,
-          life: 0, max: 50 + Math.random() * 60, z });
-      }
-    }
-    for (let i = parts.length - 1; i >= 0; i--) {
-      const p = parts[i];
-      p.x += p.vx; p.y += p.vy; p.vx *= 0.985; p.vy *= 0.985; p.life++;
-      if (p.life > p.max) { parts.splice(i, 1); continue; }
-      const t = 1 - p.life / p.max, sy = p.y - scrollY;
-      const len = 1.5 + 5 * p.z, sp = Math.hypot(p.vx, p.vy) || 1;
-      ctx.strokeStyle = `rgba(255,255,255,${(0.25 + 0.75 * p.z) * t})`;
-      ctx.lineWidth = 0.6 + 1.2 * p.z; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(p.x - (p.vx / sp) * len, sy - (p.vy / sp) * len); ctx.lineTo(p.x, sy); ctx.stroke();
-    }
-
+    // искры («бенгальский огонь») у головы убраны по просьбе заказчицы 04.11 — в физике остаётся только пунктир
     if (head > startDoc) {
       // голова импульса
       const jitter = zone === "registry" && !reduced ? (Math.random() - 0.5) * 1.6 : 0;
       const sig = zone === "portal";
       ctx.save();
       ctx.fillStyle = sig ? `rgb(${SIGNAL})` : "#fff";
-      ctx.shadowColor = sig ? `rgba(${SIGNAL},0.9)` : "rgba(255,255,255,0.8)"; ctx.shadowBlur = 12;
+      ctx.shadowColor = sig ? "rgba(64,170,255,0.95)" : "rgba(255,255,255,0.8)"; ctx.shadowBlur = 12;
       ctx.beginPath(); ctx.arc(X + jitter, hy, zone === "registry" ? 2 : 3, 0, Math.PI * 2); ctx.fill();
       if (zone === "registry") {
         // канал сжат у самой головы
@@ -158,7 +138,7 @@
       const by = btnDocY - scrollY, tip = Math.max(btnLeft - 4, X + 14);
       ctx.save();
       ctx.strokeStyle = `rgb(${SIGNAL})`; ctx.fillStyle = `rgb(${SIGNAL})`; ctx.lineWidth = 2;
-      ctx.shadowColor = `rgba(${SIGNAL},0.8)`; ctx.shadowBlur = 10;
+      ctx.shadowColor = "rgba(64,170,255,0.9)"; ctx.shadowBlur = 10;
       ctx.beginPath(); ctx.moveTo(X, by); ctx.lineTo(tip - 6, by); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(tip, by); ctx.lineTo(tip - 9, by - 5); ctx.lineTo(tip - 9, by + 5); ctx.closePath(); ctx.fill();
       ctx.restore();
