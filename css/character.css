@@ -1,0 +1,144 @@
+/* Вариант «с характером» поверх style.css. Всё здесь — моя трактовка, в материалах заказчицы этого нет.
+   1. Голос в шрифте  2. Резкий масштаб  3. Сквозной импульс (js/character.js)
+   4. Живые схемы     5. Один сигнальный цвет — только там, где поток идёт без потерь */
+
+:root {
+  --signal: #5CC8FF;                 /* холодный электрический голубой — мой выбор */
+  --signal-glow: rgba(92, 200, 255, 0.55);
+  --display: "Oswald", "Arial Narrow", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* 1. Голос в шрифте */
+.h1, .h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.h1 { font-size: clamp(38px, 5.6vw, 80px); line-height: 1.02; }
+.h2 { font-size: clamp(30px, 4.2vw, 56px); line-height: 1.04; max-width: 1000px; }
+
+.overline, .block__index, .h3, .code, .gate__status, .btn,
+.field__label i, .status, .mega__note {
+  font-family: var(--mono);
+}
+.h3 { font-size: 13px; letter-spacing: 0.06em; font-weight: 700; }
+.code { font-size: 15px; letter-spacing: 0.04em; }
+.overline { font-size: 11px; letter-spacing: 0.2em; }
+.status { font-size: 12px; letter-spacing: 0.04em; }
+
+/* 2. Резкий масштаб: слово во всю ширину, размер подгоняет скрипт */
+.mega {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 clamp(36px, 5vw, 64px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.mega__note {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mega__word {
+  display: block;
+  width: max-content;              /* ширина по тексту — по ней скрипт считает размер */
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 18vw;                 /* запасной размер, если скрипт не отработал */
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  white-space: nowrap;
+  transform-origin: left bottom;
+}
+#portal .mega__word { color: var(--signal); text-shadow: 0 0 40px rgba(92, 200, 255, 0.25); }
+
+/* 5. Сигнал: стрела главного экрана — чистый поток */
+.art-vector line { stroke: var(--signal); }
+.art-vector polygon { fill: var(--signal); }
+.status__lamp--signal { background: var(--signal); box-shadow: 0 0 12px var(--signal-glow); }
+.btn:hover, .btn:focus-visible {
+  border-color: var(--signal);
+  color: var(--signal);
+  box-shadow: 0 0 0 1px var(--signal), 0 0 22px rgba(92, 200, 255, 0.3);
+}
+.btn.is-target { border-color: var(--signal); box-shadow: 0 0 0 1px var(--signal), 0 0 26px rgba(92, 200, 255, 0.28); }
+
+/* 3. Сквозной импульс — холст поверх страницы, клики не перехватывает */
+.thread {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 4. Живые схемы — запускаются, когда ячейка появляется на экране */
+.cell .scheme * { transform-box: view-box; }
+
+/* Диссипация: частицы непрерывно отрываются и улетают вперёд */
+.cell--dissipation .spray line { opacity: 0; }
+.cell--dissipation.is-live .spray line {
+  animation: fly var(--dur, 4s) cubic-bezier(.2, .6, .3, 1) var(--delay, 0s) infinite;
+}
+@keyframes fly {
+  0%   { opacity: 0; transform: translate(calc(var(--dx) * -1), calc(var(--dy) * -1)); }
+  18%  { opacity: var(--op, 1); }
+  70%  { opacity: var(--op, 1); }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * 0.6), calc(var(--dy) * 0.6)); }
+}
+.cell--dissipation.is-live .ray { animation: flicker 2.6s ease-in-out infinite; }
+.cell--dissipation.is-live .ray:nth-of-type(2n) { animation-delay: -1.3s; }
+@keyframes flicker { 50% { opacity: 0.25; } }
+
+/* Гипер-сжатие: луч упирается в сетку, его отталкивает назад */
+.cell--compression.is-live .push { animation: push 3.2s cubic-bezier(.5, 0, .2, 1) infinite; }
+@keyframes push {
+  0%   { transform: translateX(-10px); }
+  45%  { transform: translateX(14px); }
+  52%  { transform: translateX(8px); }
+  100% { transform: translateX(-10px); }
+}
+.cell--compression.is-live .mesh line { animation: hit 3.2s ease-out infinite; }
+@keyframes hit {
+  0%, 40%   { stroke: var(--line); }
+  47%       { stroke: var(--text); }
+  70%, 100% { stroke: var(--line); }
+}
+
+/* Импульс в вектор: документ → зигзаг → чистая сигнальная линия → бегущий импульс */
+.cell--impulse .signal-line,
+.cell--impulse .signal-head { stroke: var(--signal); }
+.cell--impulse .zig,
+.cell--impulse .signal-line { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.cell--impulse .signal-head { opacity: 0; }
+.cell--impulse .runner {
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 10 200;
+  stroke-dashoffset: 10;
+  opacity: 0;
+}
+.cell--impulse.is-live .zig { animation: draw 1.1s ease-out forwards; }
+.cell--impulse.is-live .signal-line { animation: draw 1.1s cubic-bezier(.6, 0, .2, 1) 1s forwards; }
+.cell--impulse.is-live .signal-head { animation: appear .4s ease-out 2s forwards; }
+.cell--impulse.is-live .runner { animation: run 2.4s cubic-bezier(.5, 0, .5, 1) 2.3s infinite; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes appear { to { opacity: 1; } }
+@keyframes run {
+  0%   { stroke-dashoffset: 10; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell .scheme * { animation: none !important; }
+  .cell--dissipation .spray line { opacity: var(--op, 1); }
+  .cell--impulse .zig, .cell--impulse .signal-line { stroke-dashoffset: 0; }
+  .cell--impulse .signal-head { opacity: 1; }
+}

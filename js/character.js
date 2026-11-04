@@ -1,0 +1,178 @@
+// Вариант «с характером»: огромные слова по ширине, живые схемы, сквозной импульс.
+(function () {
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 2. Огромное слово подгоняется ровно под ширину блока */
+  const words = [...document.querySelectorAll(".mega__word")];
+  function fitWords() {
+    words.forEach((w) => {
+      w.style.fontSize = "100px";
+      const k = w.parentElement.clientWidth / w.scrollWidth;
+      w.style.fontSize = Math.floor(100 * k * 0.995) + "px";
+    });
+  }
+
+  /* 4. Живые схемы: параметры полёта для каждой частицы */
+  document.querySelectorAll(".cell--dissipation .spray line").forEach((l) => {
+    const x1 = +l.getAttribute("x1"), y1 = +l.getAttribute("y1");
+    const x2 = +l.getAttribute("x2"), y2 = +l.getAttribute("y2");
+    const cx = (x1 + x2) / 2 - 40, cy = (y1 + y2) / 2 - 60;   // от начала распада луча
+    const len = Math.hypot(cx, cy) || 1;
+    const dur = 3.2 + Math.random() * 2.2;
+    l.style.setProperty("--dx", (cx / len) * 16 + "px");
+    l.style.setProperty("--dy", (cy / len) * 16 + "px");
+    l.style.setProperty("--op", l.getAttribute("opacity") || 1);
+    l.style.setProperty("--dur", dur.toFixed(2) + "s");
+    l.style.setProperty("--delay", (-Math.random() * dur).toFixed(2) + "s");
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-live"); io.unobserve(e.target); } });
+  }, { threshold: 0.35 });
+  document.querySelectorAll(".cell").forEach((c) => io.observe(c));
+
+  /* 3. Сквозной импульс: линия растёт вниз вместе со скроллом.
+     Физика — рассыпается, реестр — сжимается, фильтр — чистая, портал — сигнал и стрела в кнопку */
+  const cv = document.querySelector(".thread");
+  const ctx = cv.getContext("2d");
+  const btn = document.querySelector(".terminal .btn");
+  const zoneIds = ["physics", "registry", "filter", "portal"];
+  const SIGNAL = "92,200,255";
+  let W = 0, H = 0, dpr = 1, zones = [], startDoc = 0, endDoc = 0, X = 0, btnDocY = 0, btnLeft = 0;
+  const parts = [];
+
+  function docTop(el) { return el.getBoundingClientRect().top + scrollY; }
+
+  function measure() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    zones = zoneIds.map((id) => {
+      const el = document.getElementById(id);
+      return { id, top: docTop(el), bottom: docTop(el) + el.offsetHeight };
+    });
+    const frame = document.querySelector(".frame").getBoundingClientRect();
+    const pad = parseFloat(getComputedStyle(document.getElementById("physics")).paddingLeft) || 16;
+    X = Math.max(6, frame.left + pad * 0.45);
+    startDoc = zones[0].top;
+    const b = btn.getBoundingClientRect();
+    btnDocY = b.top + scrollY + b.height / 2;
+    btnLeft = b.left;
+    endDoc = btnDocY;
+    fitWords();
+  }
+
+  function zoneAt(y) {
+    for (const z of zones) if (y >= z.top && y < z.bottom) return z.id;
+    return y < startDoc ? null : "portal";
+  }
+
+  function seg(y1, y2, style) {
+    if (y2 <= y1) return;
+    const a = y1 - scrollY, b = y2 - scrollY;
+    if (b < 0 || a > H) return;
+    ctx.save();
+    if (style === "physics") {
+      // рваный, затухающий контур
+      ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1;
+      ctx.setLineDash([9, 7]); ctx.lineDashOffset = -y1;
+    } else if (style === "registry") {
+      ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.lineWidth = 0.8;
+    } else if (style === "filter") {
+      ctx.strokeStyle = "rgba(255,255,255,0.95)"; ctx.lineWidth = 1.5;
+    } else {
+      ctx.strokeStyle = `rgb(${SIGNAL})`; ctx.lineWidth = 2;
+      ctx.shadowColor = `rgba(${SIGNAL},0.8)`; ctx.shadowBlur = 10;
+    }
+    ctx.beginPath(); ctx.moveTo(X, Math.max(a, -2)); ctx.lineTo(X, Math.min(b, H + 2)); ctx.stroke();
+    ctx.restore();
+    if (style === "registry") {
+      // зажимы: регламенты сдавливают канал
+      ctx.save(); ctx.strokeStyle = "rgba(138,138,138,0.9)"; ctx.lineWidth = 1;
+      const step = 34, first = Math.ceil(y1 / step) * step;
+      ctx.beginPath();
+      for (let y = first; y < y2; y += step) {
+        const sy = y - scrollY; if (sy < -10 || sy > H + 10) continue;
+        ctx.moveTo(X - 7, sy - 6); ctx.lineTo(X - 2, sy);
+        ctx.moveTo(X + 7, sy - 6); ctx.lineTo(X + 2, sy);
+      }
+      ctx.stroke(); ctx.restore();
+    }
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    // на последнем полуэкране голова опускается к низу окна, чтобы дойти до кнопки
+    const maxScroll = document.documentElement.scrollHeight - H;
+    const tail = Math.min(Math.max((scrollY - (maxScroll - H * 0.5)) / (H * 0.5), 0), 1);
+    const head = Math.min(Math.max(scrollY + H * (0.62 + 0.34 * tail), startDoc), endDoc);
+    if (head > startDoc) {
+      for (const z of zones) seg(Math.max(z.top, startDoc), Math.min(z.bottom, head), z.id);
+    }
+    const zone = zoneAt(head);
+    const hy = head - scrollY;
+
+    // частицы диссипации отрываются от головы и улетают вперёд (вниз)
+    if (!reduced && zone === "physics" && head > startDoc && parts.length < 240) {
+      const narrow = X < 20 ? 0.35 : 1;
+      for (let i = 0; i < 2; i++) {
+        const z = Math.random() ** 1.5;
+        parts.push({ x: X, y: head, vx: (Math.random() - 0.5) * 2.2 * narrow, vy: 0.5 + Math.random() * 1.8,
+          life: 0, max: 50 + Math.random() * 60, z });
+      }
+    }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.x += p.vx; p.y += p.vy; p.vx *= 0.985; p.vy *= 0.985; p.life++;
+      if (p.life > p.max) { parts.splice(i, 1); continue; }
+      const t = 1 - p.life / p.max, sy = p.y - scrollY;
+      const len = 1.5 + 5 * p.z, sp = Math.hypot(p.vx, p.vy) || 1;
+      ctx.strokeStyle = `rgba(255,255,255,${(0.25 + 0.75 * p.z) * t})`;
+      ctx.lineWidth = 0.6 + 1.2 * p.z; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(p.x - (p.vx / sp) * len, sy - (p.vy / sp) * len); ctx.lineTo(p.x, sy); ctx.stroke();
+    }
+
+    if (head > startDoc) {
+      // голова импульса
+      const jitter = zone === "registry" && !reduced ? (Math.random() - 0.5) * 1.6 : 0;
+      const sig = zone === "portal";
+      ctx.save();
+      ctx.fillStyle = sig ? `rgb(${SIGNAL})` : "#fff";
+      ctx.shadowColor = sig ? `rgba(${SIGNAL},0.9)` : "rgba(255,255,255,0.8)"; ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.arc(X + jitter, hy, zone === "registry" ? 2 : 3, 0, Math.PI * 2); ctx.fill();
+      if (zone === "registry") {
+        // канал сжат у самой головы
+        ctx.shadowBlur = 0; ctx.strokeStyle = "rgba(224,224,224,0.9)"; ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(X - 12, hy - 18); ctx.lineTo(X - 3, hy); ctx.lineTo(X - 12, hy + 18);
+        ctx.moveTo(X + 12, hy - 18); ctx.lineTo(X + 3, hy); ctx.lineTo(X + 12, hy + 18);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // финал: импульс собирается в стрелу и входит в кнопку
+    const arrived = head >= endDoc - 1;
+    btn.classList.toggle("is-target", arrived);
+    if (arrived) {
+      const by = btnDocY - scrollY, tip = Math.max(btnLeft - 4, X + 14);
+      ctx.save();
+      ctx.strokeStyle = `rgb(${SIGNAL})`; ctx.fillStyle = `rgb(${SIGNAL})`; ctx.lineWidth = 2;
+      ctx.shadowColor = `rgba(${SIGNAL},0.8)`; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.moveTo(X, by); ctx.lineTo(tip - 6, by); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(tip, by); ctx.lineTo(tip - 9, by - 5); ctx.lineTo(tip - 9, by + 5); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    if (!reduced) requestAnimationFrame(frame);
+  }
+
+  measure();
+  addEventListener("resize", measure);
+  addEventListener("load", measure);
+  if (document.fonts) document.fonts.ready.then(measure);
+  // высота страницы меняется при открытии выпадающего списка формы
+  new ResizeObserver(measure).observe(document.querySelector(".frame"));
+  if (reduced) { addEventListener("scroll", () => requestAnimationFrame(frame), { passive: true }); }
+  requestAnimationFrame(frame);
+})();
