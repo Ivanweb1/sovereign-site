@@ -173,7 +173,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 .art-crystal * { stroke: var(--text); stroke-width: 1; stroke-linejoin: miter; }
 .art-crystal .back { stroke: var(--muted); stroke-dasharray: 3 4; }
 /* Стрела — главный элемент: толще, со свечением (фильтр задан в самом SVG) */
-.art-vector line { stroke: var(--white); stroke-width: 2.5; stroke-linecap: square; }
+.art-vector line { stroke: var(--white); stroke-width: 2; stroke-linecap: square; }
+/* ореол под ядром — световой разрез */
+.art-vector .halo { stroke-width: 9; opacity: 0.28; stroke-linecap: round; }
 .art-vector polygon { fill: var(--white); stroke: none; }
 .art-node { fill: var(--white); }
 
@@ -208,6 +210,21 @@ ul { margin: 0; padding: 0; list-style: none; }
 .scheme .doc { stroke: var(--text); stroke-width: 1; }
 .scheme .doc-lines line { stroke: var(--muted); stroke-width: 1; }
 .scheme .art-ticks line { stroke: var(--muted); }
+/* Импульс в вектор — поле радара */
+.scheme--radar .radar-grid line { stroke: var(--line); stroke-width: 0.7; opacity: 0.9; }
+.scheme--radar .radar-rings circle { stroke: #4A4A4A; stroke-width: 0.8; stroke-dasharray: 1 3; }
+.scheme--radar .routes polyline { stroke: var(--text); stroke-width: 1; stroke-linejoin: miter; }
+.scheme--radar .route-nodes rect { fill: var(--bg); stroke: var(--text); stroke-width: 0.8; }
+.scheme--radar .route-ends circle { fill: var(--text); }
+.scheme--radar .cut line { stroke: var(--white); stroke-width: 1.6; }
+.scheme--radar .cut polygon { fill: var(--white); }
+.scheme--radar .radar-label text {
+  fill: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 6.5px;
+  letter-spacing: 0.08em;
+}
+.scheme--radar .radar-label text:last-child { fill: var(--white); }
 
 .summary {
   margin-top: clamp(40px, 6vw, 72px);
