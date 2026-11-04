@@ -5,8 +5,8 @@
 :root {
   /* По референсу заказчицы 04.11: фон тёмно-синий вместо чёрного, голубой — с белым оттенком.
      Точные оттенки — мой подбор по картинке */
-  --bg: #0A1024;
-  --line: #24304D;
+  --bg: #050B2A;                     /* глубже и насыщеннее, просьба 04.11 */
+  --line: #1F2B57;
   --muted: #8C97B3;
   --text: #E2E8F5;
   --signal: #A6E4FF;                 /* голубой с белым оттенком — ядро света */
@@ -18,10 +18,17 @@
 /* фон — глубокий синий с лёгким светом сверху, как на референсе */
 body {
   background:
-    radial-gradient(120% 60% at 50% -10%, rgba(40, 80, 170, 0.22), transparent 60%),
+    radial-gradient(120% 60% at 50% -10%, rgba(30, 70, 200, 0.28), transparent 60%),
     var(--bg);
 }
-.btn { background: #060A18; }
+/* Кнопка формы — голубой периметр со свечением, фон синий, не чёрный (просьба 04.11) */
+.btn {
+  background: #0A1A48;
+  border-color: var(--signal);
+  color: #EAF7FF;
+  text-shadow: 0 0 10px rgba(166, 228, 255, 0.7);
+  box-shadow: 0 0 0 1px var(--signal), 0 0 22px rgba(64, 170, 255, 0.45), inset 0 0 22px rgba(64, 170, 255, 0.18);
+}
 
 /* Свечение названий (просьба заказчицы: «чтобы блестели, выделялись как луч») */
 .cell .h3,
@@ -81,7 +88,11 @@ body {
   white-space: nowrap;
   transform-origin: left bottom;
 }
-#portal .mega__word { color: var(--signal); text-shadow: 0 0 40px rgba(64, 170, 255, 0.35); }
+/* «СИГНАЛ» — как стрела в ромбе: белое ядро и голубое свечение вокруг; размер меньше (подгоняет скрипт) */
+#portal .mega__word {
+  color: #EAF7FF;
+  text-shadow: 0 0 2px #fff, 0 0 12px rgba(166, 228, 255, 0.9), 0 0 30px rgba(64, 170, 255, 0.8), 0 0 70px rgba(64, 170, 255, 0.45);
+}
 
 /* 5. Сигнал: стрела главного экрана — чистый поток */
 .art-vector line { stroke: var(--signal); }
@@ -89,11 +100,12 @@ body {
 .art-vector polygon { fill: var(--signal); }
 .status__lamp--signal { background: var(--signal); box-shadow: 0 0 12px var(--signal-glow); }
 .btn:hover, .btn:focus-visible {
-  border-color: var(--signal);
-  color: var(--signal);
-  box-shadow: 0 0 0 1px var(--signal), 0 0 22px rgba(64, 170, 255, 0.4);
+  border-color: #fff;
+  color: #fff;
+  background: #0E2360;
+  box-shadow: 0 0 0 1px var(--signal), 0 0 32px rgba(64, 170, 255, 0.65), inset 0 0 26px rgba(64, 170, 255, 0.25);
 }
-.btn.is-target { border-color: var(--signal); box-shadow: 0 0 0 1px var(--signal), 0 0 26px rgba(64, 170, 255, 0.38); }
+.btn.is-target { box-shadow: 0 0 0 1px var(--signal), 0 0 32px rgba(64, 170, 255, 0.6), inset 0 0 26px rgba(64, 170, 255, 0.22); }
 
 /* 3. Сквозной импульс — холст поверх страницы, клики не перехватывает */
 .thread {
@@ -172,3 +184,7 @@ body {
   .cell--impulse .zig, .cell--impulse .signal-line { stroke-dashoffset: 0; }
   .cell--impulse .signal-head { opacity: 1; }
 }
+
+/* Итог раздела «Физика» — три абзаца, как прислала заказчица (2-й и 3-й курсивом, как у неё) */
+.summary { display: grid; gap: 14px; }
+.summary em { font-style: italic; color: var(--text); }
