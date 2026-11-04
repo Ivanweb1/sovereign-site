@@ -39,6 +39,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   border-bottom: 1px solid var(--line);
 }
 
+
+/* Строка-индекс раздела: на основной странице убрана, нужна вариантам hero-v2 и character */
 .block__index {
   display: flex;
   gap: 24px;
@@ -64,12 +66,16 @@ ul { margin: 0; padding: 0; list-style: none; }
 .overline {
   font-size: 12px;
   letter-spacing: 0.24em;
-  color: var(--muted);
+  color: #B8B8B8;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
   margin-bottom: 28px;
 }
 
 .h1 {
   margin: 0 0 40px;
+  color: var(--white);
+  /* декларация светится как луч (просьба заказчицы); кегль и начертание прежние */
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.9), 0 0 14px rgba(255, 255, 255, 0.45), 0 0 42px rgba(255, 255, 255, 0.22);
   font-size: clamp(28px, 4.2vw, 56px);
   line-height: 1.12;
   font-weight: 600;
@@ -133,7 +139,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  margin-top: 48px;
+  margin-top: clamp(36px, 5vw, 56px);
   padding: 14px 20px;
   border: 1px solid var(--line);
   font-size: 13px;
@@ -165,6 +171,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .art-grid line, .art-grid circle,
 .art-ticks line { stroke: var(--line); stroke-width: 1; }
 .art-crystal * { stroke: var(--text); stroke-width: 1; stroke-linejoin: miter; }
+.art-crystal .back { stroke: var(--muted); stroke-dasharray: 3 4; }
 /* Стрела — главный элемент: толще, со свечением (фильтр задан в самом SVG) */
 .art-vector line { stroke: var(--white); stroke-width: 2.5; stroke-linecap: square; }
 .art-vector polygon { fill: var(--white); stroke: none; }
@@ -193,8 +200,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .scheme .mesh line { stroke: var(--line); stroke-width: 1; }
 .scheme .flow { stroke: var(--text); stroke-width: 1; }
 .scheme .flow--strong { stroke: var(--white); stroke-width: 2; }
+.scheme .branches path { stroke: var(--text); stroke-width: 1; stroke-linecap: round; }
+/* частицы прежней диссипации — нужны варианту character */
 .scheme .spray line { stroke: var(--white); stroke-linecap: round; }
 .scheme .ray { stroke: var(--white); stroke-width: 2; }
+.scheme .ray-tail { stroke: var(--text); stroke-width: 1; opacity: 0.45; }
 .scheme .doc { stroke: var(--text); stroke-width: 1; }
 .scheme .doc-lines line { stroke: var(--muted); stroke-width: 1; }
 .scheme .art-ticks line { stroke: var(--muted); }
@@ -283,7 +293,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* 5. Терминал формы */
 .terminal {
   display: grid;
-  gap: 32px;
+  gap: 14px;
   margin-top: clamp(32px, 5vw, 56px);
   max-width: 760px;
 }
@@ -293,7 +303,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .field__label {
   display: flex;
   gap: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-size: 13px;
   letter-spacing: 0.06em;
   color: var(--text);
@@ -304,11 +314,12 @@ ul { margin: 0; padding: 0; list-style: none; }
 .field textarea,
 .field select {
   width: 100%;
-  padding: 6px 0;
+  padding: 12px 14px;
   border: 0;
-  border-bottom: 1px solid var(--line);
   border-radius: 0;
-  background: transparent;
+  /* без линий-разделителей: поле — едва заметная плашка (просьба заказчицы) */
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 2px 0 0 transparent;
   color: var(--text);
   font: inherit;
   font-size: 17px;
@@ -318,8 +329,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 .field select {
   appearance: none;
   cursor: pointer;
-  padding-right: 28px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E0E0E0'/%3E%3C/svg%3E") no-repeat right 4px center;
+  padding-right: 36px;
+  background: rgba(255, 255, 255, 0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E0E0E0'/%3E%3C/svg%3E") no-repeat right 14px center;
 }
 .field select option, .field select optgroup { background: var(--bg); color: var(--text); }
 
@@ -335,11 +346,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .dd__btn {
   display: block;
   width: 100%;
-  padding: 6px 28px 6px 0;
+  padding: 12px 36px 12px 14px;
   border: 0;
-  border-bottom: 1px solid var(--line);
   border-radius: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E0E0E0'/%3E%3C/svg%3E") no-repeat right 4px center;
+  box-shadow: inset 2px 0 0 transparent;
+  background: rgba(255, 255, 255, 0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E0E0E0'/%3E%3C/svg%3E") no-repeat right 14px center;
   color: var(--muted);
   font: inherit;
   font-size: 17px;
@@ -349,11 +360,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .dd.has-value .dd__btn { color: var(--text); }
 .dd__btn:focus-visible,
-.dd.is-open .dd__btn { outline: none; border-bottom-color: var(--white); }
+.dd.is-open .dd__btn { outline: none; box-shadow: inset 2px 0 0 var(--white); }
 .dd.is-open .dd__btn {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 7l5-5 5 5' stroke='%23FFFFFF'/%3E%3C/svg%3E");
 }
-.field.is-invalid .dd__btn { border-bottom-style: dashed; border-bottom-color: var(--muted); }
+.field.is-invalid .dd__btn { outline: 1px dashed var(--muted); outline-offset: -1px; }
 
 .dd__list {
   position: absolute;
@@ -444,11 +455,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .field:focus-within .field__label { color: var(--text); }
 .field input:focus,
 .field textarea:focus,
-.field select:focus { border-bottom-color: var(--white); }
+.field select:focus { box-shadow: inset 2px 0 0 var(--white); }
 
 .field.is-invalid input,
 .field.is-invalid textarea,
-.field.is-invalid select { border-bottom-style: dashed; border-bottom-color: var(--muted); }
+.field.is-invalid select { outline: 1px dashed var(--muted); outline-offset: -1px; }
 
 .btn {
   display: block;
