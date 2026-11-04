@@ -8,9 +8,7 @@
     words.forEach((w) => {
       w.style.fontSize = "100px";
       const k = w.parentElement.clientWidth / w.scrollWidth;
-      // «СИГНАЛ» — меньше, не во всю ширину (просьба заказчицы 04.11)
-      const share = w.closest("#portal") ? 0.62 : 0.995;
-      w.style.fontSize = Math.floor(100 * k * share) + "px";
+      w.style.fontSize = Math.floor(100 * k * 0.995) + "px";
     });
   }
 
