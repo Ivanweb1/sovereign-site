@@ -6,6 +6,7 @@
   const words = [...document.querySelectorAll(".mega__word")];
   function fitWords() {
     words.forEach((w) => {
+      if (!w.parentElement.clientWidth) return;   // вкладка ещё не разложена — не сжимать слово в 0
       w.style.fontSize = "100px";
       const k = w.parentElement.clientWidth / w.scrollWidth;
       w.style.fontSize = Math.floor(100 * k * 0.995) + "px";
@@ -25,6 +26,32 @@
     l.style.setProperty("--dur", dur.toFixed(2) + "s");
     l.style.setProperty("--delay", (-Math.random() * dur).toFixed(2) + "s");
   });
+  /* «Импульс в вектор» (правки 06.11): волна без вектора бежит постоянно.
+     Из документа (x=36) выходит небольшой, а примерно через сантиметр уже крупная и перехлёстывает
+     границы системы (стенки y=14 и y=106) — пока калибровка не пройдена, поток не успокаивается */
+  const wave = document.querySelector(".cell--impulse .wave");
+  if (wave) {
+    const X0 = 36, X1 = 234, RAMP = 28, AMP = 60, LEN = 72, SPEED = 0.75;   // SPEED — длин волн в секунду
+    const shape = (t) => {
+      const breath = 1 + 0.08 * Math.sin(t * 1.3);                  // волна «дышит», не застывает
+      let d = "";
+      for (let x = X0; x <= X1; x += 1.5) {
+        const u = Math.min((x - X0) / RAMP, 1);
+        const a = AMP * breath * u * u * (3 - 2 * u);                 // плавный выход из документа
+        const y = 60 + a * Math.sin(((x - X0) / LEN - t * SPEED) * Math.PI * 2);
+        d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      }
+      wave.setAttribute("d", d);
+    };
+    if (reduced) shape(0.15);
+    else {
+      let visible = true;
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(wave.closest(".cell"));
+      const tick = (now) => { if (visible) shape(now / 1000); requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }
+  }
+
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-live"); io.unobserve(e.target); } });
   }, { threshold: 0.35 });
