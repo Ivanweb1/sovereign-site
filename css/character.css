@@ -171,6 +171,8 @@ body::before {
   fill: none;
 }
 .cell--impulse .waves { filter: drop-shadow(0 0 2px rgba(166, 228, 255, 0.3)); }
+/* самая сильная волна — голубой сигнал со свечением, как названия и кнопка */
+.cell--impulse .wave--strong { filter: drop-shadow(0 0 3px var(--signal-glow)) drop-shadow(0 0 8px rgba(64, 170, 255, 0.45)); }
 /* стрела доходит до документа и упирается: тот же ритм, что у «Гипер-сжатия» */
 .cell--impulse.is-live .push { animation: knock 3.2s cubic-bezier(.5, 0, .2, 1) infinite; }
 @keyframes knock {

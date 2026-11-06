@@ -32,15 +32,25 @@
   const waves = [...document.querySelectorAll(".cell--impulse .wave")];
   if (waves.length) {
     const X0 = 76, X1 = 236, RAMP = 22;
-    // amp — размах, len — длина волны, speed — длин волн в секунду (медленно), ph — сдвиг фазы, op — яркость
+    // amp — размах, len — длина волны, speed — длин волн в секунду (медленно), ph — сдвиг фазы.
+    // Цвет (правки 06.11): каждый «зам гнёт» с разной силой — первая волна самая сильная (голубой сигнал,
+    // толще, со свечением), остальные разной яркости; op — средняя яркость, pulse — насколько она «дышит»
     const P = [
-      { amp: 46, len: 78, speed: 0.22, ph: 0.00, op: 0.95 },
-      { amp: 34, len: 56, speed: -0.17, ph: 0.30, op: 0.75 },
-      { amp: 26, len: 44, speed: 0.30, ph: 0.55, op: 0.6 },
-      { amp: 40, len: 92, speed: 0.14, ph: 0.80, op: 0.7 },
-      { amp: 18, len: 36, speed: -0.26, ph: 0.15, op: 0.5 },
+      { amp: 46, len: 78, speed: 0.22, ph: 0.00, color: "#A6E4FF", width: 1.6, op: 1.0, pulse: 0.0, strong: true },
+      { amp: 34, len: 56, speed: -0.17, ph: 0.30, color: "#E2E8F5", width: 0.9, op: 0.7, pulse: 0.25 },
+      { amp: 26, len: 44, speed: 0.30, ph: 0.55, color: "#6F9BE8", width: 0.8, op: 0.6, pulse: 0.3 },
+      { amp: 40, len: 92, speed: 0.14, ph: 0.80, color: "#8C97B3", width: 0.8, op: 0.55, pulse: 0.3 },
+      { amp: 18, len: 36, speed: -0.26, ph: 0.15, color: "#4F78C9", width: 0.7, op: 0.45, pulse: 0.35 },
     ];
-    waves.forEach((w, i) => w.setAttribute("opacity", P[i % P.length].op));
+    waves.forEach((w, i) => {
+      const p = P[i % P.length];
+      w.style.stroke = p.color;
+      w.style.strokeWidth = p.width;
+      w.setAttribute("opacity", p.op);
+      if (p.strong) w.classList.add("wave--strong");
+    });
+    // самую сильную рисуем поверх остальных
+    waves.filter((w) => w.classList.contains("wave--strong")).forEach((w) => w.parentNode.appendChild(w));
     const shape = (t) => {
       waves.forEach((w, i) => {
         const p = P[i % P.length];
@@ -53,6 +63,7 @@
           d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
         }
         w.setAttribute("d", d);
+        if (p.pulse) w.setAttribute("opacity", (p.op * (1 - p.pulse / 2 + (p.pulse / 2) * Math.sin(t * (0.5 + i * 0.23) + i))).toFixed(2));
       });
     };
     shape(0);
