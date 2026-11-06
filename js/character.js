@@ -26,27 +26,39 @@
     l.style.setProperty("--dur", dur.toFixed(2) + "s");
     l.style.setProperty("--delay", (-Math.random() * dur).toFixed(2) + "s");
   });
-  /* «Импульс в вектор» (правки 06.11): волна без вектора бежит постоянно.
-     Из документа (x=36) выходит небольшой, а примерно через сантиметр уже крупная и перехлёстывает
-     границы системы (стенки y=14 и y=106) — пока калибровка не пройдена, поток не успокаивается */
-  const wave = document.querySelector(".cell--impulse .wave");
-  if (wave) {
-    const X0 = 36, X1 = 234, RAMP = 28, AMP = 60, LEN = 72, SPEED = 0.75;   // SPEED — длин волн в секунду
+  /* «Импульс в вектор» (правки 06.11): стрела упирается в документ (CSS), за документом — несколько тонких волн.
+     У каждой своя амплитуда, длина и скорость — «каждый РОП или зам издаёт свои условия».
+     Амплитуда меньше прежней: самая крупная лишь касается границ системы (y=14 и y=106), остальные внутри */
+  const waves = [...document.querySelectorAll(".cell--impulse .wave")];
+  if (waves.length) {
+    const X0 = 76, X1 = 236, RAMP = 22;
+    // amp — размах, len — длина волны, speed — длин волн в секунду (медленно), ph — сдвиг фазы, op — яркость
+    const P = [
+      { amp: 46, len: 78, speed: 0.22, ph: 0.00, op: 0.95 },
+      { amp: 34, len: 56, speed: -0.17, ph: 0.30, op: 0.75 },
+      { amp: 26, len: 44, speed: 0.30, ph: 0.55, op: 0.6 },
+      { amp: 40, len: 92, speed: 0.14, ph: 0.80, op: 0.7 },
+      { amp: 18, len: 36, speed: -0.26, ph: 0.15, op: 0.5 },
+    ];
+    waves.forEach((w, i) => w.setAttribute("opacity", P[i % P.length].op));
     const shape = (t) => {
-      const breath = 1 + 0.08 * Math.sin(t * 1.3);                  // волна «дышит», не застывает
-      let d = "";
-      for (let x = X0; x <= X1; x += 1.5) {
-        const u = Math.min((x - X0) / RAMP, 1);
-        const a = AMP * breath * u * u * (3 - 2 * u);                 // плавный выход из документа
-        const y = 60 + a * Math.sin(((x - X0) / LEN - t * SPEED) * Math.PI * 2);
-        d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
-      }
-      wave.setAttribute("d", d);
+      waves.forEach((w, i) => {
+        const p = P[i % P.length];
+        const breath = 1 + 0.06 * Math.sin(t * 0.7 + i * 1.7);   // лёгкое «дыхание», чтобы не застывали
+        let d = "";
+        for (let x = X0; x <= X1; x += 1.5) {
+          const u = Math.min((x - X0) / RAMP, 1);
+          const a = p.amp * breath * u * u * (3 - 2 * u);         // плавный выход из документа
+          const y = 60 + a * Math.sin(((x - X0) / p.len - t * p.speed + p.ph) * Math.PI * 2);
+          d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+        }
+        w.setAttribute("d", d);
+      });
     };
-    if (reduced) shape(0.15);
-    else {
+    shape(0);
+    if (!reduced) {
       let visible = true;
-      new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(wave.closest(".cell"));
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(waves[0].closest(".cell"));
       const tick = (now) => { if (visible) shape(now / 1000); requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
     }

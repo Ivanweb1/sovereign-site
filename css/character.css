@@ -162,13 +162,28 @@ body::before {
   70%, 100% { stroke: var(--line); }
 }
 
-/* Импульс в вектор (правки 06.11): вектора нет, крупная волна бежит постоянно — форму каждый кадр задаёт js/character.js */
+/* Импульс в вектор (правки 06.11): стрела упирается в документ, за ним — несколько тонких волн; форму волн задаёт js/character.js */
 .cell--impulse .wave {
   stroke: var(--text);
-  stroke-width: 1.5;
+  stroke-width: 0.8;
   stroke-linejoin: round;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 3px rgba(166, 228, 255, 0.35));
+  fill: none;
+}
+.cell--impulse .waves { filter: drop-shadow(0 0 2px rgba(166, 228, 255, 0.3)); }
+/* стрела доходит до документа и упирается: тот же ритм, что у «Гипер-сжатия» */
+.cell--impulse.is-live .push { animation: knock 3.2s cubic-bezier(.5, 0, .2, 1) infinite; }
+@keyframes knock {
+  0%   { transform: translateX(-12px); }
+  45%  { transform: translateX(4px); }
+  52%  { transform: translateX(0); }
+  100% { transform: translateX(-12px); }
+}
+.cell--impulse.is-live .doc { animation: doc-hit 3.2s ease-out infinite; }
+@keyframes doc-hit {
+  0%, 40%   { stroke: var(--text); }
+  47%       { stroke: var(--white); filter: drop-shadow(0 0 3px var(--signal-glow)); }
+  70%, 100% { stroke: var(--text); }
 }
 
 @media (prefers-reduced-motion: reduce) {
